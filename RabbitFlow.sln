@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitFlow", "RabbitFlow\RabbitFlow.csproj", "{CFFC6F5A-FC68-493E-9FD2-D6775447879D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitFlow.Core", "RabbitFlow.Core\RabbitFlow.Core.csproj", "{2238BA47-9A72-4798-90C8-84701BEE76A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{2C4A5C3A-8692-4149-A158-CA2A215E1FAB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4E5B106D-BFDC-4655-A581-81E5D1EA4480}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitFlow.Core.Tests", "tests\RabbitFlow.Core.Tests\RabbitFlow.Core.Tests.csproj", "{D081EE95-6855-4346-850C-B2B8D789F2D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CFFC6F5A-FC68-493E-9FD2-D6775447879D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFFC6F5A-FC68-493E-9FD2-D6775447879D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFFC6F5A-FC68-493E-9FD2-D6775447879D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFFC6F5A-FC68-493E-9FD2-D6775447879D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2238BA47-9A72-4798-90C8-84701BEE76A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2238BA47-9A72-4798-90C8-84701BEE76A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2238BA47-9A72-4798-90C8-84701BEE76A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2238BA47-9A72-4798-90C8-84701BEE76A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D081EE95-6855-4346-850C-B2B8D789F2D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D081EE95-6855-4346-850C-B2B8D789F2D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D081EE95-6855-4346-850C-B2B8D789F2D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D081EE95-6855-4346-850C-B2B8D789F2D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CFFC6F5A-FC68-493E-9FD2-D6775447879D} = {4E5B106D-BFDC-4655-A581-81E5D1EA4480}
+		{2238BA47-9A72-4798-90C8-84701BEE76A7} = {4E5B106D-BFDC-4655-A581-81E5D1EA4480}
+		{D081EE95-6855-4346-850C-B2B8D789F2D7} = {2C4A5C3A-8692-4149-A158-CA2A215E1FAB}
+	EndGlobalSection
+EndGlobal
