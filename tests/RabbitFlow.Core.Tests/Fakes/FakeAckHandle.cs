@@ -1,5 +1,4 @@
 using RabbitFlow.Core.Interfaces;
-using RabbitFlow.Transport;
 
 namespace RabbitFlow.Core.Tests.Fakes;
 

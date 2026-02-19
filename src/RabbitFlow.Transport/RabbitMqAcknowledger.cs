@@ -1,4 +1,5 @@
-﻿using RabbitMQ.Client;
+﻿using RabbitFlow.Core.Interfaces;
+using RabbitMQ.Client;
 
 namespace RabbitFlow.Transport;
 

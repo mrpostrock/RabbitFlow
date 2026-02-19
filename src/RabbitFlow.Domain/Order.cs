@@ -1,3 +1,3 @@
-namespace RabbitFlow.Host;
+namespace RabbitFlow.Domain;
 
 public record Order(int Id);

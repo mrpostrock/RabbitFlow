@@ -1,4 +1,4 @@
-namespace RabbitFlow.Transport;
+namespace RabbitFlow.Core.Interfaces;
 
 public interface IMessageAcknowledger
 {

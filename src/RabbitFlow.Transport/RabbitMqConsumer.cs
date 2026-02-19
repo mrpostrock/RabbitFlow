@@ -1,3 +1,4 @@
+using RabbitFlow.Core;
 using RabbitFlow.Core.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -17,7 +18,7 @@ public class RabbitMqConsumer(IConnection connection, string queueName) : IMessa
             {
                 Body = eventArgs.Body,
                 Headers = eventArgs.BasicProperties.Headers ?? new Dictionary<string, object>(),
-                Topic = queueName,
+                Queue = queueName,
                 Acknowledger = new RabbitMqAcknowledger(channel, eventArgs.DeliveryTag)
             };
 

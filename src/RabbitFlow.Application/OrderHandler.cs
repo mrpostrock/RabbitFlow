@@ -1,7 +1,9 @@
+using Microsoft.Extensions.Logging;
 using RabbitFlow.Core;
 using RabbitFlow.Core.Interfaces;
+using RabbitFlow.Domain;
 
-namespace RabbitFlow.Host;
+namespace RabbitFlow.Application;
 
 public class OrderHandler(ILogger<OrderHandler> logger) : IMessageHandler<Order>
 {

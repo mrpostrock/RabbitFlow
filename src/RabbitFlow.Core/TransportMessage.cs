@@ -1,4 +1,6 @@
-namespace RabbitFlow.Transport;
+using RabbitFlow.Core.Interfaces;
+
+namespace RabbitFlow.Core;
 
 public sealed class TransportMessage
 {
@@ -6,7 +8,7 @@ public sealed class TransportMessage
 
     public required IDictionary<string, object> Headers { get; init; }
 
-    public required string Topic { get; init; } // queue / topic / subject
+    public required string Queue { get; init; }
 
     public required IMessageAcknowledger Acknowledger { get; init; }
 }

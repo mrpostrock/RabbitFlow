@@ -3,7 +3,7 @@ using RabbitFlow.Core.Interfaces;
 
 namespace RabbitFlow.Core;
 
-public class JsonMessageSerializer(JsonSerializerOptions? options = null) : IMessageSerializer
+public class SystemJsonMessageSerializer(JsonSerializerOptions? options = null) : IMessageSerializer
 {
     private readonly JsonSerializerOptions _options = options ?? new JsonSerializerOptions
     {

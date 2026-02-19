@@ -1,5 +1,3 @@
-using RabbitFlow.Transport;
-
 namespace RabbitFlow.Core.Interfaces;
 
 public interface IMessageConsumer

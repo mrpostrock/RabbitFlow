@@ -4,7 +4,6 @@ using RabbitFlow.Core.Extensions;
 using RabbitFlow.Core.Interfaces;
 using RabbitFlow.Core.Middlewares;
 using RabbitFlow.Core.Tests.Fakes;
-using RabbitFlow.Transport;
 
 namespace RabbitFlow.Core.Tests;
 
@@ -17,7 +16,7 @@ public class Tests
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        services.AddSingleton<IMessageSerializer, JsonMessageSerializer>();
+        services.AddSingleton<IMessageSerializer, SystemJsonMessageSerializer>();
 
         var builder = new MessagePipelineBuilder(services);
         builder.Use<ErrorHandlingMiddleware>();
@@ -54,7 +53,7 @@ public class Tests
                     }
                 },
                 Acknowledger = fakeAckHandle,
-                Topic = "test-topic",
+                Queue = "test-topic",
             }
         });
 
@@ -67,7 +66,7 @@ public class Tests
                 {
                     { "message-type", "Order" }
                 },
-                Topic = "test-topic",
+                Queue = "test-topic",
                 Acknowledger = fakeAckHandle
             }
         });

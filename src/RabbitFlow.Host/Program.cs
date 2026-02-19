@@ -1,7 +1,9 @@
+using RabbitFlow.Application;
 using RabbitFlow.Core;
 using RabbitFlow.Core.Extensions;
 using RabbitFlow.Core.Interfaces;
 using RabbitFlow.Core.Middlewares;
+using RabbitFlow.Domain;
 using RabbitFlow.Host;
 using RabbitMQ.Client;
 
@@ -16,7 +18,7 @@ builder.Services.AddTransient<IConnection>(_ =>
     return factory.CreateConnectionAsync().GetAwaiter().GetResult();
 });
 
-builder.Services.AddTransient<IMessageSerializer, JsonMessageSerializer>();
+builder.Services.AddTransient<IMessageSerializer, SystemJsonMessageSerializer>();
 
 
 builder.Services.AddMessageProcessing(cfg =>
