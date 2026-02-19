@@ -8,7 +8,7 @@ public class MessageTypeMiddleware : IMessageMiddleware
 
     public async Task InvokeAsync(MessageContext context, MessageDelegate next)
     {
-        if (context.Headers.TryGetValue("message-type", out var type))
+        if (context.Transport.Headers.TryGetValue("message-type", out var type))
             context.Items[MessageTypeKey] = type;
 
         await next(context);

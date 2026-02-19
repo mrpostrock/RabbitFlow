@@ -14,8 +14,6 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
         catch (Exception ex)
         {
             logger.LogError(ex, ex.Message);
-            
-            await context.Ack.NackAsync(requeue: false);
         }
     }
 }

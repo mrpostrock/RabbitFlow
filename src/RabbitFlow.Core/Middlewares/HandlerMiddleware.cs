@@ -7,6 +7,5 @@ public class HandlerMiddleware<T>(Func<T, MessageContext, Task> handler) : IMess
     public async Task InvokeAsync(MessageContext context, MessageDelegate next)
     {
         await handler((T)context.Items["message"]!, context);
-        await context.Ack.AckAsync();
     }
 }

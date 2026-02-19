@@ -1,3 +1,4 @@
+using System.Text;
 using RabbitFlow.Core.Interfaces;
 
 namespace RabbitFlow.Core.Middlewares;
@@ -20,14 +21,15 @@ public class MultiTypeDeserializeMiddleware : IMessageMiddleware
 
     public async Task InvokeAsync(MessageContext context, MessageDelegate next)
     {
-        if (context.Headers.TryGetValue("message-type", out var type) && _typeMap.TryGetValue(type.ToString()!, out var targetType))
+        if (context.Transport.Headers.TryGetValue("message-type", out var type) && _typeMap.TryGetValue(Encoding.UTF8.GetString((byte[])type), out var targetType))
         {
-            var obj = _serializer.Deserialize(context.Body, targetType);
+            
+            var obj = _serializer.Deserialize(context.Transport.Body, targetType);
             context.Items[_itemsKey] = obj;
         }
         else
         {
-            throw new InvalidOperationException($"Unknown message type: {context.Headers["message-type"]}");
+            throw new InvalidOperationException($"Unknown message type: {context.Transport.Headers["message-type"]}");
         }
 
         await next(context);

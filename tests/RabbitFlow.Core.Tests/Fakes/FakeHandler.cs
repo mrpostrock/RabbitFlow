@@ -3,7 +3,7 @@ using RabbitFlow.Core.Interfaces;
 
 namespace RabbitFlow.Core.Tests.Fakes;
 
-public abstract class FakeHandler(ILogger<FakeHandler> logger) : IMessageHandler<Order>
+public class FakeHandler(ILogger<FakeHandler> logger) : IMessageHandler<Order>
 {
     public Task HandleAsync(Order message, MessageContext context)
     {

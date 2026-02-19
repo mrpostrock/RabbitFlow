@@ -1,16 +1,17 @@
 using RabbitFlow.Core.Interfaces;
+using RabbitFlow.Transport;
 
 namespace RabbitFlow.Core.Tests.Fakes;
 
-public class FakeAckHandle : IAckHandle
+public class FakeAckHandle : IMessageAcknowledger
 {
-    public Task AckAsync()
+    public ValueTask AckAsync()
     {
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public Task NackAsync(bool requeue)
+    public ValueTask NackAsync(bool requeue)
     {
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }
