@@ -19,6 +19,7 @@ builder.Services.AddTransient<IConnection>(_ =>
 });
 
 builder.Services.AddTransient<IMessageSerializer, SystemJsonMessageSerializer>();
+builder.Services.AddTransient<ScopeMarker>();
 
 
 builder.Services.AddMessageProcessing(cfg =>

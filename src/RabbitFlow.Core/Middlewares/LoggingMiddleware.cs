@@ -8,7 +8,9 @@ public class LoggingMiddleware(ILogger<LoggingMiddleware> logger) : IMessageMidd
     public async Task InvokeAsync(MessageContext context, MessageDelegate next)
     {
         logger.LogInformation("Executing message");
+        
         await next(context);
+        
         logger.LogInformation("Executed message");
     }
 }

@@ -1,5 +1,3 @@
-using RabbitFlow.Core.Interfaces;
-
 namespace RabbitFlow.Core;
 
 public sealed class MessageContext

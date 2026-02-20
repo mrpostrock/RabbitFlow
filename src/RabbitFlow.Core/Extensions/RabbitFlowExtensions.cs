@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using RabbitFlow.Core.Builders;
 using RabbitFlow.Core.Interfaces;
 using RabbitFlow.Core.Middlewares;
 

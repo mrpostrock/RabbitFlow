@@ -18,12 +18,13 @@ public static class ServiceCollectionExtensions
 
             foreach (var queue in queues)
             {
-                serviceCollection.AddSingleton(sp =>
+                serviceCollection.AddSingleton(serviceProvider =>
                 {
-                    var consumer = new RabbitMqConsumer(sp.GetRequiredService<IConnection>(), queue.QueueName);
-                    var pipeline = queue.Pipeline.Build(sp);
+                    var fakeConsumer = new FakeConsumer();
+                    // var consumer = new RabbitMqConsumer(serviceProvider.GetRequiredService<IConnection>(), queue.QueueName);
+                    var pipeline = queue.Pipeline.Build(serviceProvider);
                     
-                    return new MessageProcessingRuntime(consumer, pipeline);
+                    return new MessageProcessingRuntime(fakeConsumer, pipeline);
                 });
             }
             

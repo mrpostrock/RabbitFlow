@@ -5,11 +5,11 @@ using RabbitFlow.Domain;
 
 namespace RabbitFlow.Application;
 
-public class OrderHandler(ILogger<OrderHandler> logger) : IMessageHandler<Order>
+public class OrderHandler(ILogger<OrderHandler> logger, ScopeMarker marker) : IMessageHandler<Order>
 {
     public Task HandleAsync(Order message, MessageContext context)
     {
-        logger.LogInformation("Order handler started");
+        logger.LogInformation("Order handler started, scoped marker {id}", marker.Id);
         return Task.CompletedTask;
     }
 }

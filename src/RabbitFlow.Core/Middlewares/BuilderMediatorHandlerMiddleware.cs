@@ -15,7 +15,8 @@ public class BuilderMediatorHandlerMiddleware(IServiceProvider serviceProvider, 
         if (!handlerRegistry.TryGetValue(messageType, out var handlerType))
             throw new InvalidOperationException($"No handler registered for {messageType}");
         
-        var handler = serviceProvider.GetRequiredService(handlerType);
+        using var scope = serviceProvider.CreateScope();
+        var handler = scope.ServiceProvider.GetRequiredService(handlerType);
 
         var method = handlerType.GetMethod("HandleAsync")!;
         await (Task)method.Invoke(handler, [msg, context])!;

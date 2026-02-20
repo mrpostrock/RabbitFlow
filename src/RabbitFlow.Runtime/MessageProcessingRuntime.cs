@@ -1,10 +1,12 @@
+using Microsoft.Extensions.DependencyInjection;
 using RabbitFlow.Core;
 using RabbitFlow.Core.Interfaces;
-using RabbitFlow.Transport;
 
 namespace RabbitFlow.Runtime;
 
-public class MessageProcessingRuntime(IMessageConsumer messageConsumer, MessagePipeline pipeline)
+public class MessageProcessingRuntime(
+    IMessageConsumer messageConsumer,
+    MessagePipeline pipeline)
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
