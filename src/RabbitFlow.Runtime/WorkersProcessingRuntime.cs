@@ -50,6 +50,8 @@ public class WorkersProcessingRuntime(IMessageConsumer messageConsumer, MessageP
     
     private async Task WorkerLoop(CancellationToken ct)
     {
+        var workerId = Guid.NewGuid().ToString();
+        
         await foreach (TransportMessage message in _channel.Reader.ReadAllAsync(ct))
         {
             if (ct .IsCancellationRequested)
@@ -57,7 +59,7 @@ public class WorkersProcessingRuntime(IMessageConsumer messageConsumer, MessageP
             
             try
             {
-                await ProcessMessageAsync(message, ct);
+                await ProcessMessageAsync(message, ct, workerId);
                 await message.Acknowledger.AckAsync();
             }
             catch (Exception ex)
@@ -69,12 +71,13 @@ public class WorkersProcessingRuntime(IMessageConsumer messageConsumer, MessageP
     
     private async Task ProcessMessageAsync(
         TransportMessage message,
-        CancellationToken ct)
+        CancellationToken ct,
+        string workerId)
     {
         var context = new MessageContext
         {
             Transport = message,
-            Items = {  }
+            Items = { {"workerId", workerId} }
         };
 
         await pipeline.ExecuteAsync(context, ct);
@@ -83,6 +86,6 @@ public class WorkersProcessingRuntime(IMessageConsumer messageConsumer, MessageP
 
 internal class RuntimeOptions
 {
-    public int WorkersAmount { get; set; } = 5;
+    public int WorkersAmount { get; set; } = 10;
     public int ChannelCapacity { get; set; } = 100;
 }

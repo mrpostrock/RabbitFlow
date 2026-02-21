@@ -4,12 +4,11 @@ namespace RabbitFlow.Core.Builders;
 
 public sealed class QueueBuilder
 {
-    internal QueueBuilder(
-        string queueName,
-        IServiceCollection services)
+    internal QueueBuilder(string queueName,
+        IServiceCollection services, MessagePipelineBuilder pipelineBuilder)
     {
         QueueName = queueName;
-        Pipeline = new MessagePipelineBuilder(services);
+        Pipeline = pipelineBuilder;
     }
 
     public MessagePipelineBuilder Pipeline { get; set; }

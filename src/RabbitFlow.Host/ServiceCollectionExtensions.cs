@@ -1,3 +1,5 @@
+using System.Threading.Channels;
+using RabbitFlow.Core;
 using RabbitFlow.Core.Builders;
 using RabbitFlow.Runtime;
 using RabbitFlow.Transport;
@@ -19,7 +21,7 @@ public static class ServiceCollectionExtensions
             {
                 serviceCollection.AddSingleton(serviceProvider =>
                 {
-                    var fakeConsumer = new FakeConsumer(queue.QueueName);
+                    var fakeConsumer = new FakeConsumer(queue.QueueName,  serviceProvider.GetRequiredService<Channel<TransportMessage>>());
                     var pipeline = queue.Pipeline.Build(serviceProvider);
                     
                     return new WorkersProcessingRuntime(fakeConsumer, pipeline);

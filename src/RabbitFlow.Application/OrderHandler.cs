@@ -9,9 +9,21 @@ public class OrderHandler(ILogger<OrderHandler> logger) : IMessageHandler<Order>
 {
     public async Task HandleAsync(Order message, MessageContext context)
     {
-        await Task.Delay(500);
-        
         logger.LogInformation("Order Received with id {id}", message.Id);
-        logger.LogInformation("Order Received with from queue {queue}", context.Transport.Queue);
+        await Task.Delay(15000);
+        logger.LogInformation("Order processed with id {id}", message.Id);
+    }
+}
+
+
+public class UserHandler(ILogger<UserHandler> logger) : IMessageHandler<User>
+{
+    public async Task HandleAsync(User message, MessageContext context)
+    {
+        logger.LogInformation("User received with id {id}", message.Id);
+        
+        await Task.Delay(10000);
+        
+        logger.LogInformation("User processed with id {id}", message.Id);
     }
 }

@@ -1,37 +1,24 @@
-using System.Text;
+using System.Threading.Channels;
 using RabbitFlow.Core;
 using RabbitFlow.Core.Interfaces;
 
 namespace RabbitFlow.Transport;
 
-public class FakeConsumer(string queueName) : IMessageConsumer
+public class FakeConsumer(string queueName, Channel<TransportMessage> channel) : IMessageConsumer
 {
     public async Task StartAsync(Func<TransportMessage, CancellationToken, Task> onMessage, CancellationToken cancellationToken)
     {
-        ulong index = 0;
-        const string template = """
-                                { 
-                                    "id": @id
-                                }
-                                """;
-        
-        while (!cancellationToken.IsCancellationRequested)
+        await foreach (var message in channel.Reader.ReadAllAsync(cancellationToken))
         {
-            await onMessage(new TransportMessage
-                {
-                    Body = Encoding.UTF8.GetBytes(template.Replace("@id", index.ToString())),
-                    Headers = new Dictionary<string, object>()
-                    {
-                        {"message-type", "Order"u8.ToArray()}
-                    },
-                    Queue = queueName,
-                    Acknowledger = new FakeAck()
-                },
-                cancellationToken);
-            
-            index++;
+            var newMessage = new TransportMessage
+            {
+                Body = message.Body,
+                Headers = message.Headers,
+                Queue = queueName,
+                Acknowledger = message.Acknowledger
+            };
 
-            await Task.Delay(5000, cancellationToken);
+            await onMessage(newMessage,  cancellationToken);
         }
     }
 }

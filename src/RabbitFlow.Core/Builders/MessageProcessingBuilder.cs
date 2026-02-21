@@ -5,12 +5,13 @@ namespace RabbitFlow.Core.Builders;
 public class MessageProcessingBuilder(IServiceCollection serviceCollection)
 {
     private readonly List<QueueBuilder> _queues = [];
+    private readonly MessagePipelineBuilder _pipelineBuilder = new(serviceCollection);
 
     public MessageProcessingBuilder AddRabbitMqQueue(
         string queueName,
         Action<QueueBuilder> configure)
     {
-        var queue = new QueueBuilder(queueName, serviceCollection);
+        var queue = new QueueBuilder(queueName, serviceCollection, _pipelineBuilder);
         configure(queue);
         _queues.Add(queue);
         
