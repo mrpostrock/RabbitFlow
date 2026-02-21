@@ -7,7 +7,7 @@ namespace RabbitFlow.Core;
 
 public class MessagePipelineBuilder(IServiceCollection services)
 {
-    private readonly IList<Func<IServiceProvider, IMessageMiddleware>> _factories = new List<Func<IServiceProvider, IMessageMiddleware>>();
+    private readonly List<Func<IServiceProvider, IMessageMiddleware>> _factories = [];
     private readonly Dictionary<Type, Func<IServiceProvider, object, MessageContext, CancellationToken, Task>> _newHandlerRegistry = new();
 
     public MessagePipelineBuilder Use<TMiddleware>() where TMiddleware : class, IMessageMiddleware
@@ -36,7 +36,7 @@ public class MessagePipelineBuilder(IServiceCollection services)
             var handler = sp.GetRequiredService<IMessageHandler<TMessage>>();
             await handler.HandleAsync((TMessage)msg, ctx);
         };
-        
+
         return this;
     }
     

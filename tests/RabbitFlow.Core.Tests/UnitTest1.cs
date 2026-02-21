@@ -29,7 +29,7 @@ public class Tests
             { "Order", typeof(Order) }
         };
 
-        builder.UseJson(typeMap);
+         builder.UseSystemJson(typeMap);
         builder.Handle<Order, FakeHandler>();
 
         var provider = services.BuildServiceProvider();

@@ -14,12 +14,13 @@ public static class RabbitFlowExtensions
             return builder;
         }
 
-        public MessagePipelineBuilder UseJson(IDictionary<string, Type> typeMap, string itemsKey = "message")
+        public MessagePipelineBuilder UseSystemJson(IDictionary<string, Type> typeMap, string itemsKey = "message")
         {
             builder.Use(sp => new MultiTypeDeserializeMiddleware(
                 typeMap,
                 sp.GetRequiredService<IMessageSerializer>(),
-                itemsKey));
+                itemsKey)
+            );
 
             return builder;
         }
