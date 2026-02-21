@@ -5,12 +5,8 @@ namespace RabbitFlow.Core.Middlewares;
 
 public class LoggingMiddleware(ILogger<LoggingMiddleware> logger) : IMessageMiddleware
 {
-    public async Task InvokeAsync(MessageContext context, MessageDelegate next)
+    public async Task InvokeAsync(MessageContext context, MessageDelegate next, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Executing message");
-        
-        await next(context);
-        
-        logger.LogInformation("Executed message");
+        await next(context, cancellationToken);
     }
 }

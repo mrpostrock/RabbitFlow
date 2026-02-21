@@ -55,7 +55,7 @@ public class Tests
                 Acknowledger = fakeAckHandle,
                 Queue = "test-topic",
             }
-        });
+        }, CancellationToken.None);
 
         await _pipeline.ExecuteAsync(new MessageContext
         {
@@ -69,6 +69,6 @@ public class Tests
                 Queue = "test-topic",
                 Acknowledger = fakeAckHandle
             }
-        });
+        }, CancellationToken.None);
     }
 }

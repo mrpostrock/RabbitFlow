@@ -26,7 +26,23 @@ builder.Services.AddMessageProcessing(cfg =>
 {
     cfg.AddRabbitMqQueue("test-queue", queueBuilder =>
     {
-        var typeMap = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
+        var typeMap = new Dictionary<string, Type>(StringComparer.InvariantCultureIgnoreCase)
+        {
+            { "Order", typeof(Order) }
+        };
+
+        queueBuilder.Pipeline
+            .Use<ErrorHandlingMiddleware>()
+            .Use<ErrorHandlingMiddleware>()
+            .Use<LoggingMiddleware>()
+            .Use<MessageTypeMiddleware>()
+            .UseJson(typeMap)
+            .Handle<Order, OrderHandler>();
+    });
+
+    cfg.AddRabbitMqQueue("test-queue2", queueBuilder =>
+    {
+        var typeMap = new Dictionary<string, Type>(StringComparer.InvariantCultureIgnoreCase)
         {
             { "Order", typeof(Order) }
         };

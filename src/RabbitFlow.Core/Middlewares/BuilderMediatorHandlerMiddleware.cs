@@ -3,9 +3,9 @@ using RabbitFlow.Core.Interfaces;
 
 namespace RabbitFlow.Core.Middlewares;
 
-public class BuilderMediatorHandlerMiddleware(IServiceProvider serviceProvider, IReadOnlyDictionary<Type, Type> handlerRegistry, string itemsKey = "message") : IMessageMiddleware
+public class BuilderMediatorHandlerMiddleware(IServiceProvider serviceProvider, IReadOnlyDictionary<Type, Func<IServiceProvider, object, MessageContext, CancellationToken, Task>> handlerRegistry, string itemsKey = "message") : IMessageMiddleware
 {
-    public async Task InvokeAsync(MessageContext context, MessageDelegate next)
+    public async Task InvokeAsync(MessageContext context, MessageDelegate next, CancellationToken cancellationToken)
     {
         if (!context.Items.TryGetValue(itemsKey, out var msg))
             throw new InvalidOperationException("Message not found in context");
@@ -16,11 +16,8 @@ public class BuilderMediatorHandlerMiddleware(IServiceProvider serviceProvider, 
             throw new InvalidOperationException($"No handler registered for {messageType}");
         
         using var scope = serviceProvider.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService(handlerType);
+        await handlerType.Invoke(scope.ServiceProvider, msg, context, cancellationToken);
 
-        var method = handlerType.GetMethod("HandleAsync")!;
-        await (Task)method.Invoke(handler, [msg, context])!;
-
-        await next(context);
+        await next(context, cancellationToken);
     }
 }

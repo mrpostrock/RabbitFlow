@@ -8,14 +8,16 @@ namespace RabbitFlow.Core;
 public class MessagePipelineBuilder(IServiceCollection services)
 {
     private readonly IList<Func<IServiceProvider, IMessageMiddleware>> _factories = new List<Func<IServiceProvider, IMessageMiddleware>>();
-    private readonly Dictionary<Type, Type> _handlerRegistry = new();
+    private readonly Dictionary<Type, Func<IServiceProvider, object, MessageContext, CancellationToken, Task>> _newHandlerRegistry = new();
 
     public MessagePipelineBuilder Use<TMiddleware>() where TMiddleware : class, IMessageMiddleware
     {
-        if (services.All(x => x.ServiceType != typeof(IMessageMiddleware)))
-            services.AddTransient<TMiddleware>();
+        if (services.Any(x => x.ServiceType == typeof(TMiddleware))) 
+            return this;
         
+        services.TryAddTransient<TMiddleware>();
         _factories.Add(sp => sp.GetRequiredService<TMiddleware>());
+
         return this;
     }
 
@@ -27,16 +29,21 @@ public class MessagePipelineBuilder(IServiceCollection services)
 
     public MessagePipelineBuilder Handle<TMessage, THandler>() where THandler : class, IMessageHandler<TMessage>
     {
-        services.TryAddTransient(typeof(THandler));
-        _handlerRegistry[typeof(TMessage)] = typeof(THandler);
-
+        services.TryAddTransient<IMessageHandler<TMessage>, THandler>();
+        
+        _newHandlerRegistry[typeof(TMessage)] = async (sp, msg, ctx, ct) =>
+        {
+            var handler = sp.GetRequiredService<IMessageHandler<TMessage>>();
+            await handler.HandleAsync((TMessage)msg, ctx);
+        };
+        
         return this;
     }
     
     public MessagePipeline Build(IServiceProvider serviceProvider)
     {
         var factories = _factories.Select(f => f(serviceProvider)).ToList();
-        factories.Add(new BuilderMediatorHandlerMiddleware(serviceProvider, _handlerRegistry));
+        factories.Add(new BuilderMediatorHandlerMiddleware(serviceProvider, _newHandlerRegistry));
         
         return new MessagePipeline(factories);
     }

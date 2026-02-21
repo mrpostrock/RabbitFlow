@@ -1,7 +1,6 @@
 using RabbitFlow.Core.Builders;
 using RabbitFlow.Runtime;
 using RabbitFlow.Transport;
-using RabbitMQ.Client;
 
 namespace RabbitFlow.Host;
 
@@ -20,11 +19,10 @@ public static class ServiceCollectionExtensions
             {
                 serviceCollection.AddSingleton(serviceProvider =>
                 {
-                    var fakeConsumer = new FakeConsumer();
-                    // var consumer = new RabbitMqConsumer(serviceProvider.GetRequiredService<IConnection>(), queue.QueueName);
+                    var fakeConsumer = new FakeConsumer(queue.QueueName);
                     var pipeline = queue.Pipeline.Build(serviceProvider);
                     
-                    return new MessageProcessingRuntime(fakeConsumer, pipeline);
+                    return new WorkersProcessingRuntime(fakeConsumer, pipeline);
                 });
             }
             

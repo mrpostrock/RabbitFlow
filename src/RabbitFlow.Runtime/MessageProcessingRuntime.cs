@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using RabbitFlow.Core;
 using RabbitFlow.Core.Interfaces;
 
@@ -22,7 +21,7 @@ public class MessageProcessingRuntime(
 
         try
         {
-            await pipeline.ExecuteAsync(context);
+            await pipeline.ExecuteAsync(context, token);
             await message.Acknowledger.AckAsync();
         }
         catch (Exception e)

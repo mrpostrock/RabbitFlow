@@ -19,11 +19,10 @@ public class MultiTypeDeserializeMiddleware : IMessageMiddleware
         _itemsKey = itemsKey;
     }
 
-    public async Task InvokeAsync(MessageContext context, MessageDelegate next)
+    public async Task InvokeAsync(MessageContext context, MessageDelegate next, CancellationToken cancellationToken)
     {
         if (context.Transport.Headers.TryGetValue("message-type", out var type) && _typeMap.TryGetValue(Encoding.UTF8.GetString((byte[])type), out var targetType))
         {
-            
             var obj = _serializer.Deserialize(context.Transport.Body, targetType);
             context.Items[_itemsKey] = obj;
         }
@@ -32,6 +31,6 @@ public class MultiTypeDeserializeMiddleware : IMessageMiddleware
             throw new InvalidOperationException($"Unknown message type: {context.Transport.Headers["message-type"]}");
         }
 
-        await next(context);
+        await next(context, cancellationToken);
     }
 }

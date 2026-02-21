@@ -8,16 +8,16 @@ public sealed class MessagePipeline
 
     public MessagePipeline(IEnumerable<IMessageMiddleware> middlewares)
     {
-        MessageDelegate pipeline = _ => Task.CompletedTask;
+        MessageDelegate pipeline = (_, _) => Task.CompletedTask;
 
         foreach (var m in middlewares.Reverse())
         {
             var next = pipeline;
-            pipeline = ctx => m.InvokeAsync(ctx, next);
+            pipeline = (ctx, cancellationToken) => m.InvokeAsync(ctx, next, cancellationToken);
         }
         
         _pipeline = pipeline;
     }
     
-    public Task ExecuteAsync(MessageContext context) => _pipeline(context);
+    public Task ExecuteAsync(MessageContext context, CancellationToken cancellationToken) => _pipeline(context, cancellationToken);
 }

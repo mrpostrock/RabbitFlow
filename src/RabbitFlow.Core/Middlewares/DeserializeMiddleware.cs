@@ -4,11 +4,11 @@ namespace RabbitFlow.Core.Middlewares;
 
 public class DeserializeMiddleware<T>(IMessageSerializer serializer, string itemsKey = "message") : IMessageMiddleware
 {
-    public async Task InvokeAsync(MessageContext context, MessageDelegate next)
+    public async Task InvokeAsync(MessageContext context, MessageDelegate next, CancellationToken cancellationToken)
     {
         var obj = serializer.Deserialize(context.Transport.Body, typeof(T));
         context.Items[itemsKey] = obj;
 
-        await next(context);
+        await next(context, cancellationToken);
     }
 }
