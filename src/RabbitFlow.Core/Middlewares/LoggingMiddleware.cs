@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.Logging;
 using RabbitFlow.Core.Interfaces;
 
@@ -9,10 +10,18 @@ public class LoggingMiddleware(ILogger<LoggingMiddleware> logger) : IMessageMidd
     {
         var scopeData = new Dictionary<string, object>
         {
-            ["workerId"] = context.Items["workerId"]
+            ["worker-id"] = context.Items["workerId"],
+            ["message-id"] = GetString(context.Transport.Headers["message-id"]),
+            ["raw-message"] = GetString(context.Transport.Headers["raw-message"])
         };
 
         using var loggerScope = logger.BeginScope(scopeData);
         await next(context, cancellationToken);
+    }
+
+    private string GetString(object header)
+    {
+        var bytes = (byte[]) header;
+        return Encoding.UTF8.GetString(bytes);
     }
 }

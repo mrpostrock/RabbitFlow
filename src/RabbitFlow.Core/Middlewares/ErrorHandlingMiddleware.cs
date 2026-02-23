@@ -15,6 +15,8 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
         {
             context.MarkAsFailed(ex);
             logger.LogError(ex, ex.Message);
+            
+            throw;
         }
     }
 }

@@ -1,10 +1,14 @@
 using System.Threading.Channels;
+using Microsoft.Extensions.Logging;
 using RabbitFlow.Core;
 using RabbitFlow.Core.Interfaces;
 
 namespace RabbitFlow.Runtime;
 
-public class WorkersProcessingRuntime(IMessageConsumer messageConsumer, MessagePipeline pipeline)
+public class WorkersProcessingRuntime(
+    IMessageConsumer messageConsumer,
+    MessagePipeline pipeline,
+    ILogger<WorkersProcessingRuntime> logger)
 {
     private readonly RuntimeOptions _runtimeOptions = new();
     
@@ -51,8 +55,9 @@ public class WorkersProcessingRuntime(IMessageConsumer messageConsumer, MessageP
     private async Task WorkerLoop(CancellationToken ct)
     {
         var workerId = Guid.NewGuid().ToString();
+        logger.LogInformation("Starting worker loop for {workerId}", workerId);
         
-        await foreach (TransportMessage message in _channel.Reader.ReadAllAsync(ct))
+        await foreach (var message in _channel.Reader.ReadAllAsync(ct))
         {
             if (ct .IsCancellationRequested)
                 break;
@@ -64,7 +69,7 @@ public class WorkersProcessingRuntime(IMessageConsumer messageConsumer, MessageP
             }
             catch (Exception ex)
             {
-                await message.Acknowledger.NackAsync(requeue: false);
+                await message.Acknowledger.NackAsync(requeue: true);
             }
         }
     }
@@ -86,6 +91,6 @@ public class WorkersProcessingRuntime(IMessageConsumer messageConsumer, MessageP
 
 internal class RuntimeOptions
 {
-    public int WorkersAmount { get; set; } = 10;
+    public int WorkersAmount { get; set; } = 100;
     public int ChannelCapacity { get; set; } = 100;
 }

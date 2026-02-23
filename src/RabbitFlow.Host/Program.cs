@@ -19,8 +19,8 @@ builder.Services.AddSerilog(x => x.Enrich.FromLogContext()
 builder.Services.AddTransient<IConnection>(_ =>
 {
     var factory = new ConnectionFactory();
-    factory.UserName = "sbdev";
-    factory.Password = "sbdev";
+    factory.UserName = "guest";
+    factory.Password = "guest";
 
     return factory.CreateConnectionAsync().GetAwaiter().GetResult();
 });
@@ -34,21 +34,18 @@ builder.Services.AddMessageProcessing(cfg =>
         { nameof(User), typeof(User) }
     };
     
-    cfg.AddRabbitMqQueue("test-queue", queueBuilder =>
+    cfg.AddRabbitMqQueue("rabbit.flow", queueBuilder =>
     {
         queueBuilder.Pipeline
-            .Use<ErrorHandlingMiddleware>()
             .Use<LoggingMiddleware>()
+            .Use<ErrorHandlingMiddleware>()
             .Use<MessageTypeMiddleware>()
             .UseSystemJson(typeMap)
-            .Handle<Order, OrderHandler>()
-            .Handle<User, UserHandler>();
-            
+            .Handle<Order, OrderHandler>();
     });
 });
 
 builder.Services.AddHostedService<Worker>();
-builder.Services.AddSingleton<Channel<TransportMessage>>(_ => Channel.CreateBounded<TransportMessage>(new BoundedChannelOptions(10000)));
 
 var host = builder.Build();
 host.Run();

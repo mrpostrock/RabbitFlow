@@ -9,8 +9,6 @@ public class OrderHandler(ILogger<OrderHandler> logger) : IMessageHandler<Order>
 {
     public async Task HandleAsync(Order message, MessageContext context)
     {
-        logger.LogInformation("Order Received with id {id}", message.Id);
-        await Task.Delay(15000);
         logger.LogInformation("Order processed with id {id}", message.Id);
     }
 }
