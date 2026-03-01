@@ -13,13 +13,11 @@ public class WorkersProcessingRuntime(
     ILogger<WorkersProcessingRuntime> logger)
 {
     private readonly RuntimeOptions _runtimeOptions = new();
-    
     private Channel<TransportMessage>[] _channels = null!;
-    
-    private readonly List<Task> _workers = [];
+    private readonly List<Task> _workers = []; //TODO configurable
     private readonly CancellationTokenSource _cts = new();
 
-    private readonly EntityTypePartitioner _partitioner = new(new Dictionary<string, int>
+    private readonly EntityTypePartitioner _partitioner = new(new Dictionary<string, int> //TODO configurable
     {
         { "test-entity", 1 },
         { "test-entity2", 2 }
@@ -70,7 +68,9 @@ public class WorkersProcessingRuntime(
     private async Task WorkerLoop(int partition, CancellationToken ct)
     {
         var workerId = Guid.NewGuid().ToString();
-        logger.LogInformation("Starting worker loop for {workerId}", workerId);
+        
+        if (logger.IsEnabled(LogLevel.Information))
+            logger.LogInformation("Starting worker loop for {workerId}", workerId);
         
         await foreach (var message in _channels[partition].Reader.ReadAllAsync(ct))
         {

@@ -5,7 +5,7 @@ using RabbitMQ.Client.Events;
 
 namespace RabbitFlow.Transport;
 
-public class RabbitMqConsumer(IConnection connection, string queueName) : IMessageConsumer,  IDisposable, IAsyncDisposable
+public sealed class RabbitMqConsumer(IConnection connection, string queueName) : IMessageConsumer,  IDisposable, IAsyncDisposable
 {
     private IChannel? _channel;
     
@@ -19,7 +19,7 @@ public class RabbitMqConsumer(IConnection connection, string queueName) : IMessa
             var transportMessage = new TransportMessage
             {
                 Body = eventArgs.Body.ToArray(),
-                Headers = eventArgs.BasicProperties.Headers ?? new Dictionary<string, object>(),
+                Headers = eventArgs.BasicProperties.Headers ?? new Dictionary<string, object?>(),
                 Queue = queueName,
                 Acknowledger = new RabbitMqAcknowledger(_channel, eventArgs.DeliveryTag)
             };
@@ -33,12 +33,14 @@ public class RabbitMqConsumer(IConnection connection, string queueName) : IMessa
     public void Dispose()
     {
         connection.Dispose();
-        _channel.Dispose();
+        _channel?.Dispose();
     }
 
     public async ValueTask DisposeAsync()
     {
         await connection.DisposeAsync();
-        await _channel.DisposeAsync();
+        
+        if (_channel != null) 
+            await _channel.DisposeAsync();
     }
 }

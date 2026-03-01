@@ -12,7 +12,6 @@ using Serilog.Formatting.Json;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-
 builder.Services.AddSerilog(x => x.Enrich.FromLogContext()
     .WriteTo.Console(new JsonFormatter())
 );
