@@ -11,4 +11,8 @@
       <ProjectReference Include="..\RabbitFlow.Transport\RabbitFlow.Transport.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.3" />
+    </ItemGroup>
+
 </Project>

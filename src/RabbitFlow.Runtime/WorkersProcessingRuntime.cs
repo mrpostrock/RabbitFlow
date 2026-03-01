@@ -1,42 +1,54 @@
 using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitFlow.Core;
 using RabbitFlow.Core.Interfaces;
+using RabbitFlow.Runtime.Partitioner;
 
 namespace RabbitFlow.Runtime;
 
 public class WorkersProcessingRuntime(
     IMessageConsumer messageConsumer,
-    MessagePipeline pipeline,
+    IMessagePipeline pipeline,
     ILogger<WorkersProcessingRuntime> logger)
 {
     private readonly RuntimeOptions _runtimeOptions = new();
     
-    private Channel<TransportMessage> _channel = null!;
+    private Channel<TransportMessage>[] _channels = null!;
+    
     private readonly List<Task> _workers = [];
     private readonly CancellationTokenSource _cts = new();
+
+    private readonly EntityTypePartitioner _partitioner = new(new Dictionary<string, int>
+    {
+        { "test-entity", 1 },
+        { "test-entity2", 2 }
+    });
     
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _channel = Channel.CreateBounded<TransportMessage>(
-            new BoundedChannelOptions(_runtimeOptions.ChannelCapacity)
-            {
-                FullMode = BoundedChannelFullMode.Wait
-            });
+        _channels = Enumerable.Range(0, _runtimeOptions.PartitionersAmount)
+            .Select(_ => Channel.CreateBounded<TransportMessage>(
+                new BoundedChannelOptions(_runtimeOptions.ChannelCapacity)
+                {
+                    FullMode = BoundedChannelFullMode.Wait
+                }))
+            .ToArray();
 
         StartWorkers();
-
+        
         messageConsumer.StartAsync(async (message, token) =>
             {
-                await _channel.Writer.WriteAsync(message, token);
+                var partition = _partitioner.GetPartition(message);
+                await _channels[partition-1].Writer.WriteAsync(message, token);
             },
             cancellationToken
-        );
+         );
 
         return Task.CompletedTask;
     }
 
-    public async Task StopAsync(CancellationToken cancellationToken)
+    public async Task Stop()
     {
         await StopWorkers();
     }
@@ -48,23 +60,26 @@ public class WorkersProcessingRuntime(
 
     private void StartWorkers()
     {
-        for (var i = 0; i < _runtimeOptions.WorkersAmount; i++)
-            _workers.Add(Task.Run(() => WorkerLoop(_cts.Token), _cts.Token));
+        for (var i = 0; i < _runtimeOptions.PartitionersAmount; i++)
+        {
+            var partition = i;
+            _workers.Add(Task.Run(() => WorkerLoop(partition, _cts.Token), _cts.Token));
+        }
     }
     
-    private async Task WorkerLoop(CancellationToken ct)
+    private async Task WorkerLoop(int partition, CancellationToken ct)
     {
         var workerId = Guid.NewGuid().ToString();
         logger.LogInformation("Starting worker loop for {workerId}", workerId);
         
-        await foreach (var message in _channel.Reader.ReadAllAsync(ct))
+        await foreach (var message in _channels[partition-1].Reader.ReadAllAsync(ct))
         {
             if (ct .IsCancellationRequested)
                 break;
             
             try
             {
-                await ProcessMessageAsync(message, ct, workerId);
+                await ProcessMessageAsync(message, workerId, partition, ct);
                 await message.Acknowledger.AckAsync();
             }
             catch (Exception ex)
@@ -74,23 +89,26 @@ public class WorkersProcessingRuntime(
         }
     }
     
-    private async Task ProcessMessageAsync(
-        TransportMessage message,
-        CancellationToken ct,
-        string workerId)
+    private async Task ProcessMessageAsync(TransportMessage message,
+        string workerId, int partition,
+        CancellationToken ct)
     {
         var context = new MessageContext
         {
             Transport = message,
-            Items = { {"workerId", workerId} }
+            Items =
+            {
+                {"workerId", workerId},
+                {"partition", partition}
+            }
         };
 
         await pipeline.ExecuteAsync(context, ct);
     }
 }
 
-internal class RuntimeOptions
+public class RuntimeOptions
 {
-    public int WorkersAmount { get; set; } = 100;
-    public int ChannelCapacity { get; set; } = 100;
+    public int PartitionersAmount { get; set; } = 2;
+    public int ChannelCapacity { get; set; } = 10;
 }

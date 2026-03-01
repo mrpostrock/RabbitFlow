@@ -2,7 +2,7 @@ using RabbitFlow.Core.Interfaces;
 
 namespace RabbitFlow.Core;
 
-public sealed class MessagePipeline
+public sealed class MessagePipeline : IMessagePipeline
 {
     private readonly MessageDelegate _pipeline;
 
@@ -20,4 +20,9 @@ public sealed class MessagePipeline
     }
     
     public Task ExecuteAsync(MessageContext context, CancellationToken cancellationToken) => _pipeline(context, cancellationToken);
+}
+
+public interface IMessagePipeline
+{
+    Task ExecuteAsync(MessageContext context, CancellationToken cancellationToken);
 }
