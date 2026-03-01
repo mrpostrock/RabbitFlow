@@ -72,7 +72,7 @@ public class WorkersProcessingRuntime(
         var workerId = Guid.NewGuid().ToString();
         logger.LogInformation("Starting worker loop for {workerId}", workerId);
         
-        await foreach (var message in _channels[partition-1].Reader.ReadAllAsync(ct))
+        await foreach (var message in _channels[partition].Reader.ReadAllAsync(ct))
         {
             if (ct .IsCancellationRequested)
                 break;
