@@ -1,13 +1,13 @@
-using System.Threading.Channels;
-using RabbitFlow.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitFlow.Core.Builders;
 using RabbitFlow.Runtime;
 using RabbitFlow.Transport;
 using RabbitMQ.Client;
 
-namespace RabbitFlow.Host;
+namespace RabbitFlow.Extensions.DependencyInjection;
 
-public static class ServiceCollectionExtensions
+public static class MessageProcessingBuilderExtensions
 {
     extension(IServiceCollection serviceCollection)
     {

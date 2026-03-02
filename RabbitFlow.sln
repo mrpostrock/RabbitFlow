@@ -24,6 +24,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitFlow.Producer", "Rabb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitFlow.Runtime.Tests", "tests\RabbitFlow.Runtime.Tests\RabbitFlow.Runtime.Tests.csproj", "{D48A23BF-14C5-4486-8690-39B5579A2BA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitFlow.Extensions.DependencyInjection", "src\RabbitFlow.Extensions.DependencyInjection\RabbitFlow.Extensions.DependencyInjection.csproj", "{EDF40B4C-4710-4948-80E1-F34FA6729730}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitFlow.Serializers", "src\RabbitFlow.Serializers\RabbitFlow.Serializers.csproj", "{09F6CC3D-6CF2-4BE8-8889-6210F7070809}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitFlow.Serializers.SystemJson", "src\RabbitFlow.Serializers.SystemJson\RabbitFlow.Serializers.SystemJson.csproj", "{003C1F9D-D54E-420C-B948-ABA2BC23C71A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitFlow.Serializers.NewtonSoftJson", "src\RabbitFlow.Serializers.NewtonSoftJson\RabbitFlow.Serializers.NewtonSoftJson.csproj", "{DAE61C04-2AEE-4C07-AAC6-4465D1548CC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +74,22 @@ Global
 		{D48A23BF-14C5-4486-8690-39B5579A2BA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D48A23BF-14C5-4486-8690-39B5579A2BA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D48A23BF-14C5-4486-8690-39B5579A2BA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDF40B4C-4710-4948-80E1-F34FA6729730}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDF40B4C-4710-4948-80E1-F34FA6729730}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDF40B4C-4710-4948-80E1-F34FA6729730}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF40B4C-4710-4948-80E1-F34FA6729730}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09F6CC3D-6CF2-4BE8-8889-6210F7070809}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09F6CC3D-6CF2-4BE8-8889-6210F7070809}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09F6CC3D-6CF2-4BE8-8889-6210F7070809}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09F6CC3D-6CF2-4BE8-8889-6210F7070809}.Release|Any CPU.Build.0 = Release|Any CPU
+		{003C1F9D-D54E-420C-B948-ABA2BC23C71A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{003C1F9D-D54E-420C-B948-ABA2BC23C71A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{003C1F9D-D54E-420C-B948-ABA2BC23C71A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{003C1F9D-D54E-420C-B948-ABA2BC23C71A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAE61C04-2AEE-4C07-AAC6-4465D1548CC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAE61C04-2AEE-4C07-AAC6-4465D1548CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAE61C04-2AEE-4C07-AAC6-4465D1548CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAE61C04-2AEE-4C07-AAC6-4465D1548CC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D081EE95-6855-4346-850C-B2B8D789F2D7} = {2C4A5C3A-8692-4149-A158-CA2A215E1FAB}
@@ -78,5 +102,9 @@ Global
 		{D3988E0A-49B0-4055-8BA6-209502DB29F1} = {4E5B106D-BFDC-4655-A581-81E5D1EA4480}
 		{4483F65B-E1E0-4F4B-A795-69DBD164482A} = {4E5B106D-BFDC-4655-A581-81E5D1EA4480}
 		{D48A23BF-14C5-4486-8690-39B5579A2BA3} = {2C4A5C3A-8692-4149-A158-CA2A215E1FAB}
+		{EDF40B4C-4710-4948-80E1-F34FA6729730} = {F9068F07-D7D9-4778-A925-218A219D6943}
+		{09F6CC3D-6CF2-4BE8-8889-6210F7070809} = {F9068F07-D7D9-4778-A925-218A219D6943}
+		{003C1F9D-D54E-420C-B948-ABA2BC23C71A} = {F9068F07-D7D9-4778-A925-218A219D6943}
+		{DAE61C04-2AEE-4C07-AAC6-4465D1548CC7} = {F9068F07-D7D9-4778-A925-218A219D6943}
 	EndGlobalSection
 EndGlobal

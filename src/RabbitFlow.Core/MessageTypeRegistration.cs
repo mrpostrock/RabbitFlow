@@ -1,4 +1,4 @@
-using RabbitFlow.Core.Interfaces;
+using RabbitFlow.Serializers;
 
 namespace RabbitFlow.Core;
 

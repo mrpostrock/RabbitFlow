@@ -19,6 +19,7 @@
       <ProjectReference Include="..\RabbitFlow.Application\RabbitFlow.Application.csproj" />
       <ProjectReference Include="..\RabbitFlow.Core\RabbitFlow.Core.csproj" />
       <ProjectReference Include="..\RabbitFlow.Domain\RabbitFlow.Domain.csproj" />
+      <ProjectReference Include="..\RabbitFlow.Extensions.DependencyInjection\RabbitFlow.Extensions.DependencyInjection.csproj" />
       <ProjectReference Include="..\RabbitFlow.Runtime\RabbitFlow.Runtime.csproj" />
       <ProjectReference Include="..\RabbitFlow.Transport\RabbitFlow.Transport.csproj" />
     </ItemGroup>

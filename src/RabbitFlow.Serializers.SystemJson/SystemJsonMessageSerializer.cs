@@ -1,7 +1,6 @@
 using System.Text.Json;
-using RabbitFlow.Core.Interfaces;
 
-namespace RabbitFlow.Core;
+namespace RabbitFlow.Serializers.SystemJson;
 
 public class SystemJsonMessageSerializer(JsonSerializerOptions? options = null) : IMessageSerializer
 {

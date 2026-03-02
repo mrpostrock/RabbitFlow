@@ -27,7 +27,7 @@ public class HashPartitionerTests
             StableHash.Fnv1a
         );
 
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
             var partition = partitioner.GetPartition($"key-{i}");
             Assert.That(partition, Is.InRange(0, 7));
@@ -72,10 +72,10 @@ public static class StableHash
 
         unchecked
         {
-            uint hash = OffsetBasis;
-            for (int i = 0; i < value.Length; i++)
+            var hash = OffsetBasis;
+            foreach (var t in value)
             {
-                hash ^= value[i];
+                hash ^= t;
                 hash *= Prime;
             }
             return hash;

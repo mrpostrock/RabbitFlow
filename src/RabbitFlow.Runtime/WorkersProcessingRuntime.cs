@@ -1,6 +1,5 @@
 using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using RabbitFlow.Core;
 using RabbitFlow.Core.Interfaces;
 using RabbitFlow.Runtime.Partitioner;
@@ -19,8 +18,7 @@ public class WorkersProcessingRuntime(
 
     private readonly EntityTypePartitioner _partitioner = new(new Dictionary<string, int> //TODO configurable
     {
-        { "test-entity", 1 },
-        { "test-entity2", 2 }
+        { "order", 1 },
     });
     
     public Task StartAsync(CancellationToken cancellationToken)
@@ -89,9 +87,7 @@ public class WorkersProcessingRuntime(
         }
     }
     
-    private async Task ProcessMessageAsync(TransportMessage message,
-        string workerId, int partition,
-        CancellationToken ct)
+    private async Task ProcessMessageAsync(TransportMessage message, string workerId, int partition, CancellationToken ct)
     {
         var context = new MessageContext
         {

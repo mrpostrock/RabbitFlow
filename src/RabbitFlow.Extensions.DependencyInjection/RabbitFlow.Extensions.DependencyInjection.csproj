@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>RabbitFlow.Extensions.DependencyInjection</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RabbitFlow.Core\RabbitFlow.Core.csproj" />
+      <ProjectReference Include="..\RabbitFlow.Runtime\RabbitFlow.Runtime.csproj" />
+    </ItemGroup>
+
+</Project>

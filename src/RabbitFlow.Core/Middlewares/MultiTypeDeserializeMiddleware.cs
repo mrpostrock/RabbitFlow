@@ -1,35 +1,33 @@
 using System.Text;
 using RabbitFlow.Core.Interfaces;
+using RabbitFlow.Serializers;
 
 namespace RabbitFlow.Core.Middlewares;
 
-public class MultiTypeDeserializeMiddleware : IMessageMiddleware
+public class MultiTypeDeserializeMiddleware(IDictionary<Type, IMessageSerializer> serializersRegistry, string itemsKey = "message")
+    : IMessageMiddleware
 {
-    private readonly IDictionary<string, Type> _typeMap;
-    private readonly IMessageSerializer _serializer;
-    private readonly string _itemsKey;
-
-    public MultiTypeDeserializeMiddleware(
-        IDictionary<string, Type> typeMap,
-        IMessageSerializer serializer,
-        string itemsKey = "message")
-    {
-        _typeMap = typeMap;
-        _serializer = serializer;
-        _itemsKey = itemsKey;
-    }
-
+    private readonly Dictionary<string, Type> _registry = serializersRegistry.ToDictionary(x => x.Key.Name, x => x.Key, StringComparer.InvariantCultureIgnoreCase);
+    
     public async Task InvokeAsync(MessageContext context, MessageDelegate next, CancellationToken cancellationToken)
     {
-        if (context.Transport.Headers.TryGetValue("message-type", out var type) && _typeMap.TryGetValue(Encoding.UTF8.GetString((byte[])type), out var targetType))
-        {
-            var obj = _serializer.Deserialize(context.Transport.Body, targetType);
-            context.Items[_itemsKey] = obj;
-        }
-        else
-        {
+        if (!context.Transport.Headers.TryGetValue("message-type", out var transportHeader))
             throw new InvalidOperationException($"Unknown message type: {context.Transport.Headers["message-type"]}");
-        }
+
+        var headerValue = string.Empty;
+        if (transportHeader is byte[] transportHeaderBytes)
+            headerValue = Encoding.UTF8.GetString(transportHeaderBytes);
+
+        _registry.TryGetValue(headerValue, out var messageType);
+        if(messageType is null)
+            throw new InvalidOperationException($"Unknown message type: {headerValue}");
+        
+        serializersRegistry.TryGetValue(messageType, out var serializer);
+        if (serializer is null)
+            throw new InvalidOperationException($"Unknown message type: {headerValue}");
+
+        var obj = serializer.Deserialize(context.Transport.Body, messageType);
+        context.Items[itemsKey] = obj;
 
         await next(context, cancellationToken);
     }

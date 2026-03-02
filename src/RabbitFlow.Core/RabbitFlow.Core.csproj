@@ -9,6 +9,11 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
-      <PackageReference Include="Microsoft.Testing.Platform" Version="1.5.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RabbitFlow.Serializers.NewtonSoftJson\RabbitFlow.Serializers.NewtonSoftJson.csproj" />
+      <ProjectReference Include="..\RabbitFlow.Serializers.SystemJson\RabbitFlow.Serializers.SystemJson.csproj" />
+      <ProjectReference Include="..\RabbitFlow.Serializers\RabbitFlow.Serializers.csproj" />
     </ItemGroup>
 </Project>

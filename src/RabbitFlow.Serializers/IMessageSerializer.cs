@@ -1,4 +1,4 @@
-namespace RabbitFlow.Core.Interfaces;
+namespace RabbitFlow.Serializers;
 
 public interface IMessageSerializer
 {

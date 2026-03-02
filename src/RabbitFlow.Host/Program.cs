@@ -1,11 +1,10 @@
-using System.Threading.Channels;
 using RabbitFlow.Application;
-using RabbitFlow.Core;
-using RabbitFlow.Core.Extensions;
-using RabbitFlow.Core.Interfaces;
 using RabbitFlow.Core.Middlewares;
 using RabbitFlow.Domain;
+using RabbitFlow.Extensions.DependencyInjection;
 using RabbitFlow.Host;
+using RabbitFlow.Serializers;
+using RabbitFlow.Serializers.SystemJson;
 using RabbitMQ.Client;
 using Serilog;
 using Serilog.Formatting.Json;
@@ -18,8 +17,8 @@ builder.Services.AddSerilog(x => x.Enrich.FromLogContext()
 builder.Services.AddTransient<IConnection>(_ =>
 {
     var factory = new ConnectionFactory();
-    factory.UserName = "guest";
-    factory.Password = "guest";
+    factory.UserName = "sbdev";
+    factory.Password = "sbdev";
 
     return factory.CreateConnectionAsync().GetAwaiter().GetResult();
 });
@@ -27,20 +26,16 @@ builder.Services.AddTransient<IConnection>(_ =>
 builder.Services.AddTransient<IMessageSerializer, SystemJsonMessageSerializer>();
 builder.Services.AddMessageProcessing(cfg =>
 {
-    var typeMap = new Dictionary<string, Type>(StringComparer.InvariantCultureIgnoreCase)
-    {
-        { nameof(Order), typeof(Order) },
-        { nameof(User), typeof(User) }
-    };
-    
-    cfg.AddRabbitMqQueue("rabbit.flow", queueBuilder =>
+    cfg.AddQueue("rabbit.flow", queueBuilder =>
     {
         queueBuilder.Pipeline
             .Use<LoggingMiddleware>()
             .Use<ErrorHandlingMiddleware>()
             .Use<MessageTypeMiddleware>()
-            .UseSystemJson(typeMap)
-            .Handle<Order, OrderHandler>();
+            .Handle<Order, OrderHandler>(handleOptions =>
+            {
+                handleOptions.UseSystemJson();
+            });
     });
 });
 
