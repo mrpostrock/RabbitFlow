@@ -22,4 +22,10 @@
       <ProjectReference Include="..\RabbitFlow.Runtime\RabbitFlow.Runtime.csproj" />
       <ProjectReference Include="..\RabbitFlow.Transport\RabbitFlow.Transport.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="appsettings.Development.json">
+        <DependentUpon>appsettings.json</DependentUpon>
+      </Content>
+    </ItemGroup>
 </Project>

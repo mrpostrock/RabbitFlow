@@ -3,32 +3,28 @@ using RabbitFlow.Core.Interfaces;
 
 namespace RabbitFlow.Core.Middlewares;
 
-public class MultiTypeDeserializeMiddleware : IMessageMiddleware
+public class MultiTypeDeserializeMiddleware(
+    IDictionary<string, Type> typeMap,
+    IMessageSerializer serializer,
+    string itemsKey = "message")
+    : IMessageMiddleware
 {
-    private readonly IDictionary<string, Type> _typeMap;
-    private readonly IMessageSerializer _serializer;
-    private readonly string _itemsKey;
-
-    public MultiTypeDeserializeMiddleware(
-        IDictionary<string, Type> typeMap,
-        IMessageSerializer serializer,
-        string itemsKey = "message")
-    {
-        _typeMap = typeMap;
-        _serializer = serializer;
-        _itemsKey = itemsKey;
-    }
-
     public async Task InvokeAsync(MessageContext context, MessageDelegate next, CancellationToken cancellationToken)
     {
-        if (context.Transport.Headers.TryGetValue("message-type", out var type) && _typeMap.TryGetValue(Encoding.UTF8.GetString((byte[])type), out var targetType))
+        var containsMessageTypeHeader = context.Transport.Headers.TryGetValue("message-type", out var type);
+        if (!containsMessageTypeHeader || type == null)
+            throw new InvalidOperationException("Cannot find the message type header");
+
+        var typeKey = Encoding.UTF8.GetString((byte[])type);
+        var typeRegistered = typeMap.TryGetValue(typeKey, out var targetType);
+        if (typeRegistered && targetType is not null)
         {
-            var obj = _serializer.Deserialize(context.Transport.Body, targetType);
-            context.Items[_itemsKey] = obj;
+            var obj = serializer.Deserialize(context.Transport.Body, targetType);
+            context.Items[itemsKey] = obj;
         }
         else
         {
-            throw new InvalidOperationException($"Unknown message type: {context.Transport.Headers["message-type"]}");
+            throw new InvalidOperationException($"Unknown message type: {typeKey}");
         }
 
         await next(context, cancellationToken);

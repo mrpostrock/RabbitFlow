@@ -5,13 +5,15 @@ using RabbitMQ.Client.Events;
 
 namespace RabbitFlow.Transport;
 
-public sealed class RabbitMqConsumer(IConnection connection, string queueName) : IMessageConsumer,  IDisposable, IAsyncDisposable
+public sealed class RabbitMqConsumer(IConnection connection, string queueName, uint prefetchCount) : IMessageConsumer,  IDisposable, IAsyncDisposable
 {
     private IChannel? _channel;
     
     public async Task StartAsync(Func<TransportMessage, CancellationToken, Task> onMessage, CancellationToken cancellationToken)
     {
         _channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
+        await _channel.BasicQosAsync(0, (ushort)prefetchCount, false, cancellationToken);
+        
         var consumer = new AsyncEventingBasicConsumer(_channel);
         
         consumer.ReceivedAsync += async (_, eventArgs) =>
@@ -27,7 +29,18 @@ public sealed class RabbitMqConsumer(IConnection connection, string queueName) :
             await onMessage(transportMessage, cancellationToken);
         };
         
-        await _channel.BasicConsumeAsync(queueName, false, consumer, cancellationToken: cancellationToken);
+        var consumerTag = await _channel.BasicConsumeAsync(queueName, false, consumer, cancellationToken: cancellationToken);
+
+        cancellationToken.Register(() =>
+        {
+            _ = Task.Run(async () => await _channel.BasicCancelAsync(consumerTag, cancellationToken: CancellationToken.None), CancellationToken.None);
+        });
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        if (_channel != null)
+            await _channel.CloseAsync(cancellationToken);
     }
 
     public void Dispose()

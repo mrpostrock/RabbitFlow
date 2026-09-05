@@ -6,8 +6,8 @@ builder.Services.AddHostedService<Worker>();
 builder.Services.AddTransient<IConnection>(_ =>
 {
     var factory = new ConnectionFactory();
-    factory.UserName = "guest";
-    factory.Password = "guest";
+    factory.UserName = "sbdev";
+    factory.Password = "sbdev";
 
     factory.ClientProvidedName = " default.producer";
     

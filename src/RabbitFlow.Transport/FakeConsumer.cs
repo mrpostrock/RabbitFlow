@@ -21,4 +21,9 @@ public class FakeConsumer(string queueName, Channel<TransportMessage> channel) :
             await onMessage(newMessage,  cancellationToken);
         }
     }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }

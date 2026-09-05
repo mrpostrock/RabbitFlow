@@ -5,7 +5,7 @@ namespace RabbitFlow.Core.Tests.Fakes;
 
 public class FakeHandler(ILogger<FakeHandler> logger) : IMessageHandler<Order>
 {
-    public Task HandleAsync(Order message, MessageContext context)
+    public Task HandleAsync(Order message, MessageContext context, CancellationToken cancellationToken)
     {
         logger.LogInformation("Received Order {Message}", message);
         return Task.CompletedTask;

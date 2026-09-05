@@ -1,11 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace RabbitFlow.Core.Builders;
 
 public sealed class QueueBuilder
 {
-    internal QueueBuilder(string queueName,
-        IServiceCollection services, MessagePipelineBuilder pipelineBuilder)
+    internal QueueBuilder(string queueName, MessagePipelineBuilder pipelineBuilder)
     {
         QueueName = queueName;
         Pipeline = pipelineBuilder;

@@ -170,7 +170,6 @@ public class WorkersProcessingRuntimeTests
         };
 
         await _runtime.StartAsync(CancellationToken.None);
-        await _runtime.Stop();
 
         // Act
         await _handler(message, CancellationToken.None);

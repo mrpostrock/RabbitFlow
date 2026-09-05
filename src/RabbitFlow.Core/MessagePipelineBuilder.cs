@@ -34,7 +34,7 @@ public class MessagePipelineBuilder(IServiceCollection services)
         _newHandlerRegistry[typeof(TMessage)] = async (sp, msg, ctx, ct) =>
         {
             var handler = sp.GetRequiredService<IMessageHandler<TMessage>>();
-            await handler.HandleAsync((TMessage)msg, ctx);
+            await handler.HandleAsync((TMessage)msg, ctx, ct);
         };
 
         return this;

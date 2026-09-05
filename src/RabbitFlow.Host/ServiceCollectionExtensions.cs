@@ -1,6 +1,8 @@
 using System.Threading.Channels;
+using Microsoft.Extensions.Options;
 using RabbitFlow.Core;
 using RabbitFlow.Core.Builders;
+using RabbitFlow.Core.Configuration;
 using RabbitFlow.Runtime;
 using RabbitFlow.Transport;
 using RabbitMQ.Client;
@@ -22,11 +24,14 @@ public static class ServiceCollectionExtensions
             {
                 serviceCollection.AddSingleton(serviceProvider =>
                 {
-                    var consumer = new RabbitMqConsumer(serviceProvider.GetRequiredService<IConnection>(), queue.QueueName);
-                    var pipeline = queue.Pipeline.Build(serviceProvider);
                     var logger = serviceProvider.GetRequiredService<ILogger<WorkersProcessingRuntime>>();
+                    var options = serviceProvider.GetRequiredService<IOptions<RuntimeOptions>>();
+
+                    var prefetchCount = options.Value.PrefectCount * options.Value.PartitionersAmount;
+                    var consumer = new RabbitMqConsumer(serviceProvider.GetRequiredService<IConnection>(), queue.QueueName, (ushort)prefetchCount);
+                    var pipeline = queue.Pipeline.Build(serviceProvider);
                     
-                    return new WorkersProcessingRuntime(consumer, pipeline, logger);
+                    return new WorkersProcessingRuntime(consumer, pipeline, options, logger);
                 });
             }
             
